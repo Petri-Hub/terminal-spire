@@ -1,10 +1,8 @@
 # 🃏 Terminal Spire
 
-**TL;DR:** a card roguelike that runs in the terminal, written in plain TypeScript to stress object orientation. No engine, no libraries, no framework.
+> A card roguelike that runs in the terminal, written in plain TypeScript to stress object orientation. No game engine, no framework — two small libraries for colour and input, and nothing else.
 
 I had just finished a book on OO and wanted to apply it somewhere inheritance alone wouldn't survive. A deck-builder is a good target for that: cards, enemies, rooms and effects each vary on their own axis, so the naive class tree explodes fast.
-
-Took me three months on and off, between August and October 2024. 57 commits.
 
 ## What's in it
 
@@ -24,9 +22,16 @@ Actions are the middle of everything. What's above decides *what* happens, what'
 
 ## Stack
 
-🟦 TypeScript · 🟩 Node · 🧪 Jest
+|  | What | Why |
+|---|---|---|
+| 🟦 | **TypeScript 5.5** | Interfaces are the whole design here. Without them this project has no point |
+| 🟩 | **Node** with `tsx` | Runs TypeScript directly, so there's no build step between an edit and a run |
+| 🎨 | **chalk 5** | Colour in the terminal. Health bars and card rarity need to be readable at a glance |
+| ⌨️ | **readline-sync** | Blocking prompts. A turn-based game waits for input anyway, so async here would be ceremony |
+| 🧪 | **Jest** with `ts-jest` | Only the draw pile is covered so far |
+| 🧹 | **ESLint 9 + Prettier** | Formatting stays out of the diff |
 
-That's the whole list. No game engine, no ECS, no state library, no rendering lib. Terminal input and output are hand-rolled.
+No game engine, no ECS, no state library, no rendering library.
 
 ## If you're poking around
 
@@ -37,6 +42,16 @@ The interesting parts are `app/interfaces/` — that's where the whole design is
 ## Running
 
 ```sh
+# install dependencies
 npm install
-npm start
+
+# play — nodemon restarts on every change
+npm run dev
+
+# run the tests in watch mode
+npm test
 ```
+
+## License
+
+MIT — see [LICENSE.md](LICENSE.md).
