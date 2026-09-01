@@ -1,6 +1,8 @@
 # 🃏 Terminal Spire
 
-> A card roguelike that runs in the terminal, written in plain TypeScript to stress object orientation. No game engine, no framework — two small libraries for colour and input, and nothing else.
+> A card roguelike that runs in the terminal, heavily inspired by Slay the Spire. Written in plain TypeScript to stress object orientation: no game engine, no framework, two small libraries for colour and input and nothing else.
+
+## Why it exists
 
 I had just finished a book on OO and wanted to apply it somewhere inheritance alone wouldn't survive. A deck-builder is a good target for that: cards, enemies, rooms and effects each vary on their own axis, so the naive class tree explodes fast.
 
