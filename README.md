@@ -1,63 +1,38 @@
 # 🃏 Terminal Spire
 
-> A turn-based card roguelike that runs in the terminal. The game is the excuse — the point was to push object orientation until it either held up or broke.
+**TL;DR:** a card roguelike that runs in the terminal, written in plain TypeScript to stress object orientation. No engine, no libraries, no framework.
 
-I had just finished a book on object-oriented programming and wanted somewhere to apply it without an engine doing the thinking for me. A deck-building roguelike turned out to be a good target: cards, enemies, rooms and effects all vary along different axes, so a design that leans on inheritance alone falls apart within an hour.
+I had just finished a book on OO and wanted to apply it somewhere inheritance alone wouldn't survive. A deck-builder is a good target for that: cards, enemies, rooms and effects each vary on their own axis, so the naive class tree explodes fast.
 
-Everything here is hand-written TypeScript. No game engine, no ECS library, no framework.
+Took me three months on and off, between August and October 2024. 57 commits.
 
-## How it fits together
+## What's in it
 
-```mermaid
-flowchart TD
-    Game[Game] --> Dungeon[Dungeon]
-    Dungeon --> Room["IRoom<br/>battle · choice · shop"]
-    Room --> Entity["Entity<br/>player · enemy"]
-    Entity --> Card["Card<br/>damage · defense"]
-    Card --> Action["IAction<br/>damage · defense · idle · group"]
-    Action --> Result["IActionResult"]
-    Result --> Presenter["IPresenter<br/>terminal output"]
-    Action -.-> Calc["ICalculation<br/>static · random"]
+A game loop walks a dungeon of floors. Each floor is a room — battle, choice or shop — and a battle puts the player against an enemy, both of them entities with health and defense.
 
-    style Action fill:#f5ddd4,stroke:#eb6c36
-    style Calc fill:#f5ddd4,stroke:#eb6c36
-```
+Cards are what the player spends turns on. Playing one produces actions, actions produce results, and presenters turn those results into text. Values like damage, defense and cost don't hold numbers directly; they hold a calculation and ask it.
 
-Actions are the center of the design. Everything above them decides *what* happens; everything below decides *how much* and *how it reads*.
+Actions are the middle of everything. What's above decides *what* happens, what's below decides *how much* and *how it reads*.
 
-## The design
+## The three decisions that mattered
 
-The system rests on a handful of abstractions, each with one job.
+**🎲 Randomness had to be a strategy, not a subclass.** The obvious move is a damage card and a random damage card. Then you want random cost, and random defense, and the class tree doubles on every axis. So values delegate the number to a calculation instead — static and random are two implementations of the same thing, and no card class ever knows the difference.
 
-**Entities are anything that can act or be acted upon.** 🧍 Player and 👹 Enemy share a base that owns health, defense and identity, and nothing else. Neither knows how a turn works.
+**🧩 A group of actions is an action.** A card that deals damage *and* grants defense isn't a special case. The group implements the same contract as a single one, and returns the same kind of result, so nothing above ever branches on it.
 
-**Cards declare what they are, not how they render.** A card knows its id, name, description and cost, and is forced to implement how it plays. It knows nothing about the terminal.
+**🖨️ Nothing in the combat layer writes to the screen.** Actions return results, presenters decide how to describe them. That's what makes the fight testable and the output swappable — moving off the terminal means writing new presenters and touching nothing else.
 
-**Actions are the unit of effect.** An action takes a performer and its targets, and returns results. Damage, defense and idle are the leaves — and a group of actions implements the same contract as a single one. A card that deals damage *and* grants defense is not a special case; it is one action that happens to contain two.
+## Stack
 
-**Values may be fixed or rolled, and nothing above them cares.** Damage, defense and cost each delegate the actual number to a calculation. Static and random are two implementations of the same idea.
+🟦 TypeScript · 🟩 Node · 🧪 Jest
 
-**Rooms decide what a floor does.** ⚔️ battle, 🔀 choice and 🛒 shop share one contract, so the dungeon walks its floors without knowing what it will find in them.
+That's the whole list. No game engine, no ECS, no state library, no rendering lib. Terminal input and output are hand-rolled.
 
-**Presenters turn state into text.** Nothing in the combat layer writes to the screen.
+## If you're poking around
 
-## Decisions worth explaining
+The interesting parts are `app/interfaces/` — that's where the whole design is declared in about six small files — and `app/actions/`, where the composite lives.
 
-### Randomness is a strategy, not a subclass
-
-The first instinct is a damage card and a random damage card. That doubles for every axis — random cost, random defense, random anything — and collapses under its own weight before the game is playable.
-
-Instead, a value holds a calculation and asks it for a number. Static and random are two implementations of one interface, and any value in the game can be either without a new card class existing anywhere.
-
-### Actions return results instead of printing
-
-Every action hands back a result and lets the presenter decide how to describe it. A composed action reports itself the same way a single one does, so the layer above never learns the difference.
-
-This is what keeps combat testable and the output replaceable. Swapping the terminal for another surface means writing new presenters and touching nothing else.
-
-### Generation is split by scope
-
-The dungeon generator builds the dungeon and hands floors to a floor generator. Two levels, two responsibilities, each configurable on its own — the dungeon never needs to know how a floor gets populated.
+`app/rooms/ShopRoom.ts` and `app/behaviors/` are the thinnest parts. The shop works but barely, and enemies pick their move from a loop rather than anything you'd call AI. If you were going to extend it, that's where the room is.
 
 ## Running
 
@@ -65,9 +40,3 @@ The dungeon generator builds the dungeon and hands floors to a floor generator. 
 npm install
 npm start
 ```
-
-Built with 🟦 TypeScript on 🟩 Node. Nothing else.
-
-## Status
-
-Written between August and October 2024, inspired by Slay the Spire. Playable but unfinished — the shop room and the enemy behaviors are the least developed parts. Kept as it is, because what it was for, it did.
