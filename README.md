@@ -18,6 +18,20 @@ Cards are what the player spends turns on. Playing one produces actions, actions
 
 Actions are the middle of everything. What's above decides *what* happens, what's below decides *how much* and *how it reads*.
 
+## What it looks like
+
+Rooms are written as prose and coloured by `chalk`, so a choice reads like a page rather than a menu.
+
+<p align="center">
+  <img src="assets/dialogs.png" alt="A choice room: The Whispering Fountain, with three options" width="515">
+</p>
+
+Combat narrates itself the same way — every action returns a result, and a presenter turns it into a line.
+
+<p align="center">
+  <img src="assets/combat.png" alt="Combat log: Globin attacked Player and dealt 1 damage" width="515">
+</p>
+
 ## The three decisions that mattered
 
 **🎲 Randomness had to be a strategy, not a subclass.** The obvious move is a damage card and a random damage card. Then you want random cost, and random defense, and the class tree doubles on every axis. So values delegate the number to a calculation instead — static and random are two implementations of the same thing, and no card class ever knows the difference.
@@ -42,6 +56,10 @@ No game engine, no ECS, no state library, no rendering library.
 ## If you're poking around
 
 The interesting parts are `app/interfaces/` — that's where the whole design is declared in about six small files — and `app/actions/`, where the composite lives.
+
+<p align="center">
+  <img src="assets/code.png" alt="DamageAction implementing the IAction interface" width="480">
+</p>
 
 `app/rooms/ShopRoom.ts` and `app/behaviors/` are the thinnest parts. The shop works but barely, and enemies pick their move from a loop rather than anything you'd call AI. If you were going to extend it, that's where the room is.
 
