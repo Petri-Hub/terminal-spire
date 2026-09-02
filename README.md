@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Terminal Spire" width="500">
+</p>
+
 # 🃏 Terminal Spire
 
 > A card roguelike that runs in the terminal, heavily inspired by Slay the Spire. Written in plain TypeScript to stress object orientation: no game engine, no framework, two small libraries for colour and input and nothing else.
