@@ -1,36 +1,27 @@
 <p align="center">
-  <img src="assets/banner.png" alt="Terminal Spire" width="500">
+  <img src="assets/banner.png" alt="Terminal Spire" width="596">
 </p>
 
-# 🃏 Terminal Spire
+<br>
 
-> A card roguelike that runs in the terminal, heavily inspired by Slay the Spire. Written in plain TypeScript to stress object orientation: no game engine, no framework, two small libraries for colour and input and nothing else.
-
-## Why it exists
-
-I had just finished a book on OO and wanted to apply it somewhere inheritance alone wouldn't survive. A deck-builder is a good target for that: cards, enemies, rooms and effects each vary on their own axis, so the naive class tree explodes fast.
-
-## What's in it
-
-A game loop walks a dungeon of floors. Each floor is a room — battle, choice or shop — and a battle puts the player against an enemy, both of them entities with health and defense.
-
-Cards are what the player spends turns on. Playing one produces actions, actions produce results, and presenters turn those results into text. Values like damage, defense and cost don't hold numbers directly; they hold a calculation and ask it.
-
-Actions are the middle of everything. What's above decides *what* happens, what's below decides *how much* and *how it reads*.
-
-## What it looks like
-
-Rooms are written as prose and coloured by `chalk`, so a choice reads like a page rather than a menu.
+<h3 align="center">A card roguelike that runs in the terminal.<br>Heavily inspired by Slay the Spire, written in plain TypeScript</h3>
 
 <p align="center">
-  <img src="assets/dialogs.png" alt="A choice room: The Whispering Fountain, with three options" width="515">
+  <img alt="Top language" src="https://img.shields.io/github/languages/top/Petri-Hub/terminal-spire" /> <a href="https://github.com/Petri-Hub/terminal-spire/commits/master"><img alt="Last commit" src="https://img.shields.io/github/last-commit/Petri-Hub/terminal-spire" /></a>
 </p>
 
-Combat narrates itself the same way — every action returns a result, and a presenter turns it into a line.
+<br>
 
-<p align="center">
-  <img src="assets/combat.png" alt="Combat log: Globin attacked Player and dealt 1 damage" width="515">
-</p>
+## About
+
+> **TL;DR:** an object orientation study. I had just finished a book on OO and wanted a project where inheritance alone wouldn't survive, and a deck-builder fits: cards, enemies, rooms and effects each vary on their own axis. No game engine and no framework, only two small libraries for colour and input.
+
+<table>
+  <tr>
+    <td width="50%"><img src="assets/dialogs.png" alt="A choice room: The Whispering Fountain, with three options" /></td>
+    <td width="50%"><img src="assets/combat.png" alt="Combat log: Globin attacked Player and dealt 1 damage" /></td>
+  </tr>
+</table>
 
 ## The three decisions that mattered
 
@@ -40,42 +31,48 @@ Combat narrates itself the same way — every action returns a result, and a pre
 
 **🖨️ Nothing in the combat layer writes to the screen.** Actions return results, presenters decide how to describe them. That's what makes the fight testable and the output swappable — moving off the terminal means writing new presenters and touching nothing else.
 
-## Stack
-
-|  | What | Why |
-|---|---|---|
-| 🟦 | **TypeScript 5.5** | Interfaces are the whole design here. Without them this project has no point |
-| 🟩 | **Node** with `tsx` | Runs TypeScript directly, so there's no build step between an edit and a run |
-| 🎨 | **chalk 5** | Colour in the terminal. Health bars and card rarity need to be readable at a glance |
-| ⌨️ | **readline-sync** | Blocking prompts. A turn-based game waits for input anyway, so async here would be ceremony |
-| 🧪 | **Jest** with `ts-jest` | Only the draw pile is covered so far |
-| 🧹 | **ESLint 9 + Prettier** | Formatting stays out of the diff |
-
-No game engine, no ECS, no state library, no rendering library.
-
-## If you're poking around
-
-The interesting parts are `app/interfaces/` — that's where the whole design is declared in about six small files — and `app/actions/`, where the composite lives.
-
-<p align="center">
-  <img src="assets/code.png" alt="DamageAction implementing the IAction interface" width="480">
-</p>
-
-`app/rooms/ShopRoom.ts` and `app/behaviors/` are the thinnest parts. The shop works but barely, and enemies pick their move from a loop rather than anything you'd call AI. If you were going to extend it, that's where the room is.
-
-## Running
+## What's inside
 
 ```sh
-# install dependencies
-npm install
-
-# play — nodemon restarts on every change
-npm run dev
-
-# run the tests in watch mode
-npm test
+app
+├── actions       # damage, defense, idle and grouped actions, each with its result
+├── art           # the ASCII title screen
+├── behaviors     # how an enemy picks its next action
+├── calculations  # static and random strategies that values delegate to
+├── cards         # damage and defense cards
+├── cost          # card costs, static or random
+├── damage        # damage values, static or random
+├── defense       # defense values, static or random
+├── dungeon       # dungeon and floor generation
+├── helpers       # small utilities
+├── interfaces    # the contracts the whole design is declared in
+├── piles         # draw and used card piles
+├── presenters    # turn cards, statuses and enemy intents into text
+├── prompts       # terminal prompts: start screen, difficulty, card selection
+├── resources     # difficulty presets
+├── rooms         # battle, choice and shop rooms
+├── types         # props and options for entities, cards and rooms
+└── Game.ts       # the game loop, next to the player, enemy, deck and health bar classes
 ```
 
-## License
+## Technologies
 
-MIT — see [LICENSE.md](LICENSE.md).
+<table align="center">
+  <tr>
+    <td align="center" width="96"><img src="https://cdn.simpleicons.org/typescript" width="48" height="48" alt="TypeScript" /><br>TypeScript</td>
+    <td align="center" width="96"><img src="https://cdn.simpleicons.org/nodedotjs" width="48" height="48" alt="Node.js" /><br>Node.js</td>
+    <td align="center" width="96"><img src="https://github.com/chalk.png?size=96" width="48" height="48" alt="chalk" /><br>chalk</td>
+    <td align="center" width="96"><img src="https://cdn.simpleicons.org/jest" width="48" height="48" alt="Jest" /><br>Jest</td>
+    <td align="center" width="96"><img src="https://cdn.simpleicons.org/eslint" width="48" height="48" alt="ESLint" /><br>ESLint</td>
+    <td align="center" width="96"><img src="https://cdn.simpleicons.org/prettier" width="48" height="48" alt="Prettier" /><br>Prettier</td>
+  </tr>
+</table>
+
+## Playing
+
+It runs in any terminal with Node.js installed. Clone the repository, then:
+
+```sh
+npm install
+npm run dev
+```
